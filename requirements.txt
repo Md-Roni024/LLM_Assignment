@@ -1,0 +1,8 @@
+django
+scrapy
+psycopg2-binary
+sqlalchemy
+python-dotenv
+Pillow
+transformers
+ollama
