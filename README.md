@@ -12,32 +12,31 @@
 
 ## Overview
 
-This assignment is based on previous Scrapy assignment, where I grab hotels information like: title,price,rating,longitude,latitude ,room type & image from trip.com website. Beside the grabing image url we also download image in physical storage. In this django admin dashboard assignmnet we build a Command Line Interface(CLI) application that move all hotel inforamtion from 'Scrapy_databasse' to 'dajngo_database' then we implements CRUD(Create,Read,Update & Delete) operations on this hotels data. 
+This assignmnet is based on previous 'django_assignmnet'. Here I used Large Language Model(LLM) , OLamma Library named: gemma2:2b for updateing property information and generate a summary for each property. For updateing property description I used existing 'title,rating,room_type,price' and for updateing title I used newly created description along with existing 'title,rating,price,room_type'. After update title ,description parallelly I create a summary for each property based on 'title,description,rating,price,room_type,location,amenities'.
 
 
 
 
 ## Features
 
-- Store Scrap data in Postgresql database.
+- Implements Large Language Model(LLM)
 - Move hotels data from 'scrapy_database' to 'django_database' by CLI application.
+- Update property title and description by using LLM
+- Generate summary for each property
 - Maintain proper data table realtionship with different property like:(One to Many , Many to Many)
 - Apply CRUD operations
 
 ## Technologies
 - Django
-- Scrapy
-- Python
-- SQLAlchemy
+- Python3
 - PostgreSQL
-- Command Line Interface
+- Command Line Interface(CLI)
+- Ollama
+- Django ORM
 
  
 
 ## Project Structure
-
-Here I add my scrapy spider in django project, so that I can grab hote data in django project.
-
 ```
 django_assignment/
 │
@@ -52,23 +51,52 @@ django_assignment/
 │   ├── __init__.py
 │   ├── admin.py
 │   ├── apps.py
-│   ├── templates
-│   │   └── __hello.html
+│   ├── management
+│   │   └── commands
+│   │        └── migrate_data.py
+│   │        └── update_property
 │   ├── migrations/
 │   │   └── __init__.py
+│   ├── templates
+│   │   └── __hello.html
+│   ├── models.py
+│   ├── admin.py
 │   ├── tests.py
+│   ├── apps.py
 │   ├── views.py
 │   ├── urls.py
 ├── manage.py
 ├── .gitignore
-├── start_cli.py
 └── requirements.txt
 
 ```
 
+### Model summary
+  ```
+  Model Name: gemma2
+  Parameters: 2B
+  Architecture: gemma2
+  ```
+
+### Setup OLlama & gemma2:2b Model
+  ```bash
+  #For Linux
+  curl -fsSL https://ollama.com/install.sh | sh
+
+  #For MacOS | Windows
+  Go to this url: https://ollama.com/download 
+  Then download and install it
+  ```
+  After successfuly run & install OLlama, execute foolowing command in terminal , it will start pull gemma2:2b Model in local machine.
+  ```bash
+  ollama run gemma2:2b
+  ```
+
+
 
 ### Design-Database
-- Create databasse for Django Project
+
+- Only Create a database name as bellow, all the table will be created automatically using ORM.
   ```
   CREATE DATABASE django_database;
   ```
@@ -78,15 +106,16 @@ django_assignment/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Md-Roni024/Django-Admin_Assignment
+   git clone https://github.com/Md-Roni024/LLM_Assignment
 
    ```
 
 2. Go to the project directory and Create Virtual Environment & activate
     ```bash
-    cd Django-Admin_Assignment
+    cd LLM_Assignment
     python3 -m venv venv
-    #For Linux or MacOS
+
+    #For Linux | MacOS
     source venv/bin/activate
 
     #For Windows
@@ -98,7 +127,7 @@ django_assignment/
    ```bash
    pip install -r requirements.txt
    ```
-4. Create a .env file then add variables credentials as like:
+4. Create a .env file then add variables credentials as bellow:
     ```bash
       HOST=localhost
       PORT=5433
@@ -114,26 +143,31 @@ django_assignment/
     ```bash
     cd django_assignment
 
-    python manage.py makemigrations
-    python manage.py migrate
+    python3 manage.py makemigrations
+    python3 manage.py migrate
     ```
-8. Run CLI Application to create description and summary
+6. Run CLI for migrate data to django database
     ```bash
-      python manage.py update_description
+      python3 manage.py migrate_data
     ```
 
-9. Create super admin by terminal
+
+7. Run CLI for update title, description and create summary
+    ```bash
+    python3 manage.py update_description
+    ```
+
+8. Create super admin by terminal for access sjango admin
 
    ```bash
     python manage.py createsuperuser
     Username: 'Put Your Username'
     Username: 'Put your password, minimum 8 alphanumeric character'
    ```
-10. Run dajango admin
+9. Run dajango admin
     ```bash
-    python manage.py runserver
+    python3 manage.py runserver
     ```
-
    Go to this url: http://127.0.0.1:8000/admin/
 
   
